@@ -18,4 +18,17 @@ describe("Cadastro de usuário", () => {
                 fail(err);
             });
     });
+
+    test("Deve impedir um usuário se cadastre com os dados vazios", () => {
+        const user = { name: "", email: "", password: "" };
+
+        return request
+            .post("/user")
+            .send(user)
+            .then(res => {
+                expect(res.statusCode).toEqual(400);
+            }).catch(err => {
+                fail(err);
+            });
+    });
 });
