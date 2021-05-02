@@ -4,7 +4,7 @@
   "description": "Sistema de compartilhamento de imagem com MongoDB e TDD",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "repository": {
     "type": "git",

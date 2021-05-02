@@ -2,11 +2,12 @@ const app = require('../src/app');
 const supertest = require("supertest");
 const request = supertest(app);
 
-test("A aplicação deve responder na porta 3000", () => {
-    return request.get('/',).then(res => {
-        const status = res.statusCode;
-        expect(status).toEqual(200);
-    }).catch(err => {
+test("A aplicação deve responder na porta 3000", async (done) => {
+    try{
+        const res = await request.get('/');
+        expect(res.statusCode).toEqual(200);
+        done();
+    }catch(err){
         fail(err);
-    });
+    }
 });
