@@ -31,4 +31,32 @@ describe("Cadastro de usuário", () => {
                 fail(err);
             });
     });
+
+    test("Deve impedir que um usuário se cadastre com um e-mail repetido", () => {
+        const time = Date.now();
+        const email = `${time}@teste.com`;
+        const user = { name: "Victor", email, password: "123" };
+
+        return request
+            .post("/user")
+            .send(user)
+            .then(res => {
+                expect(res.statusCode).toEqual(200);
+                expect(res.body.email).toEqual(email);
+
+                return request
+                    .post('/user')
+                    .send(user)
+                    .then(res => {
+
+                        expect(res.statusCode).toEqual(400);
+                        expect(res.body.error).toEqual("E-mail já cadastrado.");
+
+                    })
+                    .catch(err => fail(err));
+
+            }).catch(err => {
+                fail(err);
+            });
+    });
 });
