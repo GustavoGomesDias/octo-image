@@ -9,7 +9,7 @@ mongoose.connect("mongodb://localhost:27017/octopics", {
    useNewUrlParser: true,
    useUnifiedTopology: true
 }).then(() => {
-   console.log("Conected.");
+   // console.log("Conected.");
 }).catch(err => console.log(err));
 
 app.get('/', (req, res) => {
