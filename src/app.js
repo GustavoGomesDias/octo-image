@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const user = require('./models/User');
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -12,8 +13,22 @@ mongoose.connect("mongodb://localhost:27017/octopics", {
    // console.log("Conected.");
 }).catch(err => console.log(err));
 
+const User = mongoose.model("User", user);
+
 app.get('/', (req, res) => {
    res.json({});
+});
+
+app.post('/user', async (req, res) => {
+   try{
+      const newUser = new User({ name: req.body.name, email: req.body.email, password: req.body.password });
+      await newUser.save();
+   
+      res.status(200).json({ email: req.body.email });
+   }catch(err){
+      console.log(err)
+      res.sendStatus(500);
+   }
 });
 
 module.exports = app;
