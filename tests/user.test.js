@@ -2,6 +2,27 @@ const app = require('../src/app');
 const supertest = require("supertest");
 const request = supertest(app);
 
+const mainUser = {
+    name: "Gustavo",
+    email: "email@email.com",
+    password: '123'
+}
+
+beforeAll(() => {
+    return request
+        .post('/user')
+        .send(mainUser)
+        .then(res => {})
+        .catch(err => console.log(err));
+});
+
+afterAll(() => {
+    return request
+        .delete(`/user/${mainUser.email}`)
+        .then(res => {})
+        .catch(err => console.log(err));
+});
+
 describe("Cadastro de usuário", () => {
     test("Deve cadastrar um usuáriio com sucesso", () => {
         const time = Date.now();
@@ -57,6 +78,47 @@ describe("Cadastro de usuário", () => {
 
             }).catch(err => {
                 fail(err);
+            });
+    });
+});
+
+describe("Autenticação", () => {
+    test("Deve me retornar um token quando efetuar login", () => {
+        return request
+            .post('/auth')
+            .send({ email: mainUser.email, password: mainUser.password })
+            .then(res => {
+                expect(res.statusCode).toEqual(200);
+                expect(res.body.token).toBeDefined();
+            })
+            .catch(err => {
+                fail(err)
+            });
+    });
+
+    test("Deve impedir que um usuário não cadastrado faça login", () => {
+        return request
+            .post('/auth')
+            .send({ email: 'jdiwjaidjwi@djasaji.com', password: '123' })
+            .then(res => {
+                expect(res.statusCode).toEqual(403);
+                expect(res.body.errors.email).toEqual("E-mail não cadastrado.");
+            })
+            .catch(err => {
+                fail(err)
+            });
+    });
+    
+    test("Deve impedir que um usuário faça login com a senha errada", () => {
+        return request
+            .post('/auth')
+            .send({ email: mainUser.email, password: 'errada' })
+            .then(res => {
+                expect(res.statusCode).toEqual(403);
+                expect(res.body.errors.password).toEqual("Senha incorreta.");
+            })
+            .catch(err => {
+                fail(err)
             });
     });
 });
