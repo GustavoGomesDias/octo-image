@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const app = express();
 
+const secret = "shfhkgbfvjndfjfkg";
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -48,9 +50,24 @@ app.post('/user', async (req, res) => {
    }
 });
 
+app.post('/auth', async (req, res) => {
+   const { email, password } = req.body;
+
+   jwt.sign({ email }, secret, { expiresIn: '48h' }, (err, token) => {
+      if(err){
+         res.sendStatus(500);
+         console.log(err);
+      }else{
+         res.status(200).json({ token });
+      }
+   });
+
+});
+
 app.delete('/user/email', async (req, res) => {
    await User.deleteOne({ "email": req.params.email });
    res.sendStatus(200);
 });
+
 
 module.exports = app;
