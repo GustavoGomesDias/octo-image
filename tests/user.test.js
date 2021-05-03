@@ -2,6 +2,27 @@ const app = require('../src/app');
 const supertest = require("supertest");
 const request = supertest(app);
 
+const mainUser = {
+    name: "Gustavo",
+    email: "email@email.com",
+    password: '123'
+}
+
+beforeAll(() => {
+    return request
+        .post('/user')
+        .send(mainUser)
+        .then(res => {})
+        .catch(err => console.log(err));
+});
+
+afterAll(() => {
+    return request
+        .delete(`/user/${mainUser.email}`)
+        .then(res => {})
+        .catch(err => console.log(err));
+});
+
 describe("Cadastro de usuário", () => {
     test("Deve cadastrar um usuáriio com sucesso", () => {
         const time = Date.now();
