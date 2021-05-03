@@ -81,3 +81,18 @@ describe("Cadastro de usuário", () => {
             });
     });
 });
+
+describe("Autenticação", () => {
+    test("Deve me retornar um token quando efetuar login", () => {
+        return request
+            .post('/auth')
+            .send({ email: mainUser.email, password: mainUser.password })
+            .then(res => {
+                expect(res.statusCode).toEqual(200);
+                expect(res.body.token).toBeDefined();
+            })
+            .catch(err => {
+                fail(err)
+            });
+    });
+});
